@@ -1,0 +1,111 @@
+/******************************************************************************/
+/*                                                                            */
+/*    Copyright (c) 2011, DNA Research, the 3Delight Developers.              */
+/*    All Rights Reserved.                                                    */
+/*                                                                            */
+/******************************************************************************/
+
+/*
+	Reference:
+
+	  [1] OpenEXR File Layout
+	  http://www.openexr.com/openexrfilelayout.pdf
+*/
+
+#ifndef __exrfile_h_
+#define __exrfile_h_
+
+#include "ImfCFile.h"
+#include "channellist.h"
+#include "header.h"
+#include "scanlineblock.h"
+
+class EXRFile
+{
+public:
+	EXRFile(Header* i_header):
+		m_file(NULL),
+		m_header(i_header),
+		m_scanline_block(NULL),
+		m_compression(0),
+		m_channelList(NULL),
+		
+		m_fb_base(NULL),
+		m_fb_xStride(0),
+		m_fb_yStride(0)
+	{
+	}
+	
+	/*
+		OpenOutputFile
+		
+		Open file for writing. Save some attributes from header and write
+		all data except scan line blocks
+	*/
+	int OpenOutputFile(const char* i_fileName);
+	int CloseFile();
+	
+	/*
+		WriteMagic
+		
+		Write magic number to file.
+		The magic number, of type int, is always 20000630 (decimal).
+	*/
+	int WriteMagic()const;
+	
+	/*
+		WriteVersion
+		
+		Write version block to file.
+	*/
+	int WriteVersion()const;
+	
+	/*
+		WriteHeader
+		
+		Write header.
+	*/
+	int WriteHeader()const;
+	
+	/*
+		WriteOffsets
+		
+		Write offset table to file
+	*/
+	int WriteOffsets()const;
+	
+	/*
+		WriteOffsets
+		
+		Save pixel data to temporary buffer
+	*/
+	int SetFBData(
+		const char *i_base,
+		size_t i_xStride,
+		size_t i_yStride);
+	
+	/*
+		WriteOffsets
+		
+		Convert pixel data from temporary buffer to exr scanline blocks,
+		compress and write it to exr file.
+	*/
+	int WriteFBPixels(int i_numScanLines);
+	
+private:
+	FILE *m_file;
+	Header* m_header;
+	ScanLineBlock* m_scanline_block;
+	
+	int m_dataWindow[4];
+	unsigned char m_compression;
+	
+	ChannelList* m_channelList;
+	
+	const char *m_fb_base;
+	int m_fb_xStride;
+	int m_fb_yStride;
+};
+
+#endif
+
