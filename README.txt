@@ -1,0 +1,72 @@
+
+-= microexr Library =-
+
+
+What the hell is this library ?
+-------------------------------
+
+This library was started in order to replace the original OpenEXR
+library for a limited set of capabilities. As of now, this library
+will let you _write_ multi-channels OpenEXR files in scanline format,
+with ZIP[S] compression support.
+
+We choose to support only the original OpenEXR C API. We have added
+one function to enable users to write multi-channel EXRs so that the
+library is functional (original C API only allows for RGB[A] files).
+
+If you are already using the interface designed in "ImfCFile.h", 
+chances are that you can readily link with this library.
+
+History and Future
+-------------------
+
+This library was written for 3Delight in order to provide simple
+EXR writing routines.
+
+Our wish to provide good reading functionalties for most common
+EXR layouts.
+
+OpenEXR C++ API will not be supported so we will keep updating
+the original C API.
+
+Directory Structure
+-------------------
+
+microexr/src 
+
+	contains the souce to the library.
+
+microexr/test
+	
+	contains a simple test that produces an EXR file.
+
+microexr/tools
+
+	contains a couple useful source files but not needed for
+	the library.
+
+microexr/buil
+
+	will containt the library 'libmicroexr.a' after the build.
+
+How to Build
+-------------
+
+Like this (on linux and macosx)
+
+  cd microexr/src
+  make
+
+Windows not yet tested but as you can see, should be a simple task, for once!
+
+Dependencies
+------------
+
+We will try to keep this to a minimum. Please, no boost, no python,
+no cmake or other bloat.
+
+As of now, we need this:
+
+  * zlib. For ZIP and ZIPS compression.
+  * stl. For no good reason, could be easily removed.
+
