@@ -8,7 +8,7 @@ What the hell is this library ?
 This library was started in order to replace the original OpenEXR
 library for a limited set of capabilities. As of now, this library
 will let you _write_ multi-channels OpenEXR files in scanline format,
-with ZIP[S] compression support.
+with ZIP or ZIPS compression support.
 
 We choose to support only the original OpenEXR C API. We have added
 one function to enable users to write multi-channel EXRs so that the
@@ -23,7 +23,7 @@ History and Future
 This library was written for 3Delight in order to provide simple
 EXR writing routines.
 
-Our wish to provide good reading functionalties for most common
+Our wish to provide good reading functionalities for the most common
 EXR layouts.
 
 OpenEXR C++ API will not be supported so we will keep updating
@@ -32,32 +32,48 @@ the original C API.
 Directory Structure
 -------------------
 
+README.txt
+
+	This file.
+
 microexr/src 
 
-	contains the souce to the library.
+	Contains the source to the library.
 
 microexr/test
 	
-	contains a simple test that produces an EXR file.
+	Contains a simple test that produces an EXR file.
 
 microexr/tools
 
-	contains a couple useful source files but not needed for
+	Contains a couple useful source files but not needed for
 	the library.
 
-microexr/buil
+microexr/build
 
-	will containt the library 'libmicroexr.a' after the build.
+	Contains object files (.o files) after the build.
+
+microexr/lib
+
+	Will contain 'libmicroexr.a' after the build.
 
 How to Build
 -------------
 
-Like this (on linux and macosx)
+Like this (on Linux and Mac Os X):
 
   cd microexr/src
   make
 
 Windows not yet tested but as you can see, should be a simple task, for once!
+
+To build the test:
+
+  cd microexr/tools
+  make
+  ./gradient
+
+This will generate a simple gradient file in "gradient.exr".
 
 Dependencies
 ------------
