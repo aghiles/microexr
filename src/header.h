@@ -70,6 +70,11 @@ public:
 		return &m_channelList;
 	}
 
+	unsigned NumChannels()
+	{
+		return m_channelList.NumChannels();
+	}
+
 private:
 	ChannelList m_channelList;
 	std::vector<Attribute*> m_attributeList;

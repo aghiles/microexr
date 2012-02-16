@@ -15,6 +15,8 @@
 #include "exrfile.h"
 #include "half.h"
 
+#include <assert.h>
+
 inline Header* header(ImfHeader* hdr)
 {
     return (Header*)(hdr);
@@ -261,10 +263,43 @@ int ImfHeaderSetM44fAttribute (
 ImfOutputFile* ImfOpenOutputFile(
 	const char name[],
 	const ImfHeader *hdr,
-	int channels)
+	int i_channels)
 {
-	EXRFile *file = new EXRFile( const_cast<Header*>(header(hdr)) );
-	
+	Header *h = (Header*)header(hdr);
+
+	/*
+		Now, if we don't have any channels present in the header we
+		add whatever is asked in i_channels. We use the "half"
+		data type.
+
+		Note that for programs built with the standard OpenEXR API,
+		there is of course no channels in the header since there are
+		no funcitons to add channels in the header.
+	*/
+	if( h->NumChannels() == 0 )
+	{
+		unsigned channels[] = {
+			IMF_WRITE_R, IMF_WRITE_G, IMF_WRITE_B, IMF_WRITE_A, IMF_WRITE_Y,
+			IMF_WRITE_C };
+
+		const char *names[] = { "R", "G", "B", "A", "Y", "C" };
+
+		assert( sizeof(names)/sizeof(names[0]) == 
+			sizeof(channels)/sizeof(channels[0]) );
+
+		for( unsigned i=0; i<sizeof(channels)/sizeof(channels[0]); i++ )
+		{
+			if( i_channels & channels[i] )
+			{
+				ImfHeaderInsertChannel(
+					(ImfHeader*)hdr, names[i], IMF_PIXEL_HALF );
+			}
+		}
+	}
+
+
+	EXRFile *file = new EXRFile( h );
+
 	if ( file->OpenOutputFile(name) != IMF_ERROR_NOERROR)
 	{
 		return NULL;

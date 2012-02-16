@@ -48,6 +48,22 @@ struct ImfRgba
 typedef struct ImfRgba ImfRgba;
 
 /*
+	The different write modes.
+*/
+#define IMF_WRITE_R 0x01
+#define IMF_WRITE_G 0x02
+#define IMF_WRITE_B 0x04
+#define IMF_WRITE_A 0x08
+#define IMF_WRITE_Y 0x10
+#define IMF_WRITE_C 0x20
+#define IMF_WRITE_RGB 0x07
+#define IMF_WRITE_RGBA 0x0f
+#define IMF_WRITE_YC 0x30
+#define IMF_WRITE_YA 0x18
+#define IMF_WRITE_YCA 0x38
+
+
+/*
 	Magic number
 */
 
