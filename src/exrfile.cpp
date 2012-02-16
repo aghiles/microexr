@@ -41,7 +41,15 @@ int EXRFile::OpenOutputFile(const char* i_fileName)
 				datasize,
 				m_dataWindow[1]);
 	}
-	
+
+	int height = m_dataWindow[3] - m_dataWindow[1] + 1;
+
+	m_blocks =  height / m_scanline_block->NumLinesInBlock();
+	m_blocks += height % m_scanline_block->NumLinesInBlock() > 0;
+
+	m_offset_table = new unsigned long [m_blocks];
+	m_offset_table_counter = 0;
+
 	return IMF_ERROR_NOERROR;
 }
 
@@ -52,6 +60,11 @@ int EXRFile::CloseFile()
 
 	delete m_scanline_block;
 	m_scanline_block = 0x0;
+
+	WriteOffsets();
+
+	delete [] m_offset_table;
+	m_offset_table = 0x0;
 
 	fclose(m_file);
 	m_file = 0x0;
@@ -98,7 +111,7 @@ int EXRFile::WriteHeader()const
 	return IMF_ERROR_NOERROR;
 }
 
-int EXRFile::WriteOffsets()const
+int EXRFile::WriteZerroOffsets()
 {
 	/*
 		According to [1]:
@@ -107,21 +120,47 @@ int EXRFile::WriteOffsets()const
 		scan line block. A scan line offset, of type unsigned long, indicates
 		the distance, in bytes, between the start of the file and the start
 		of the scan line block.
-		
-		But in our case all lines ordered in by increasing Y, so we can fill
-		offset table by zerros
+
+		It is not possible to get sizes of compressed blocks right now
+		so we fill offset table with 0.
 	*/
 
+	/* Save current position of the file.
+	 * Current position is start of offset table */
+	fgetpos (m_file, &m_offset_position);
+
+	/* Fill offset table by 0s */
 	/* The offset is 64 bits */	
 	char offset[] = {0,0,0,0,0,0,0,0};
-	for (
-		int i=m_dataWindow[1];
-		i<=m_dataWindow[3];
-		i+=m_scanline_block->NumLinesInBlock())
+	for ( unsigned int i=0; i<m_blocks; i++)
 	{
 		fwrite(offset, sizeof(offset), 1, m_file);
 	}
-	
+
+	return IMF_ERROR_NOERROR;
+}
+
+int EXRFile::WriteOffsets()
+{
+	/*
+		According to [1]:
+		The line offset table allows random access to scan line blocks.
+		The table is a sequence of scan line offsets, with one offset per
+		scan line block. A scan line offset, of type unsigned long, indicates
+		the distance, in bytes, between the start of the file and the start
+		of the scan line block.
+	*/
+
+	/* Move current position to start of offset table */
+	fsetpos (m_file, &m_offset_position);
+
+	unsigned long offset;
+	for ( unsigned int i=0; i<m_blocks; i++)
+	{
+		offset = m_offset_table[i];
+		fwrite(&offset, sizeof(offset), 1, m_file);
+	}
+
 	return IMF_ERROR_NOERROR;
 }
 
@@ -185,7 +224,14 @@ int EXRFile::WriteFBPixels(int i_numScanLines)
 				memcpy(destanation, source, pixel_size);
 			}
 		}
-		
+
+		/* Save position of current block to offset table */
+		fpos_t pos;
+		fgetpos (m_file, &pos);
+		unsigned int k =
+			m_offset_table_counter++/m_scanline_block->NumLinesInBlock();
+		m_offset_table[k] = pos;
+
 		m_scanline_block->StoreNextLine(data);
 		m_scanline_block->WriteToFile();
 		

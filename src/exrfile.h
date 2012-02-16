@@ -32,7 +32,11 @@ public:
 		
 		m_fb_base(NULL),
 		m_fb_xStride(0),
-		m_fb_yStride(0)
+		m_fb_yStride(0),
+
+		m_offset_position(0),
+		m_offset_table(NULL),
+		m_blocks(0)
 	{
 	}
 	
@@ -66,13 +70,20 @@ public:
 		Write header.
 	*/
 	int WriteHeader()const;
-	
+
+	/*
+	   WriteZerroOffsets
+
+	   Write zerros to the offset table
+	*/
+	int WriteZerroOffsets();
+
 	/*
 		WriteOffsets
 		
 		Write offset table to file
 	*/
-	int WriteOffsets()const;
+	int WriteOffsets();
 	
 	/*
 		WriteOffsets
@@ -105,6 +116,14 @@ private:
 	const char *m_fb_base;
 	int m_fb_xStride;
 	int m_fb_yStride;
+
+	/* Position of offset table in the file */
+	fpos_t m_offset_position;
+	unsigned long *m_offset_table;
+	unsigned int m_offset_table_counter;
+
+	/* Number of blocks in the file */
+	unsigned int m_blocks;
 };
 
 #endif

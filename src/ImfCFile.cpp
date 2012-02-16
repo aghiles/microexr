@@ -273,7 +273,7 @@ ImfOutputFile* ImfOpenOutputFile(
 	file->WriteMagic();
 	file->WriteVersion();
 	file->WriteHeader();
-	file->WriteOffsets();
+	file->WriteZerroOffsets();
 	
 	return (ImfOutputFile*)file;
 }
