@@ -47,7 +47,7 @@ int EXRFile::OpenOutputFile(const char* i_fileName)
 	m_blocks =  height / m_scanline_block->NumLinesInBlock();
 	m_blocks += height % m_scanline_block->NumLinesInBlock() > 0;
 
-	m_offset_table = new unsigned long [m_blocks];
+	m_offset_table = new fpos_t [m_blocks];
 	m_offset_table_counter = 0;
 
 	return IMF_ERROR_NOERROR;
@@ -154,7 +154,7 @@ int EXRFile::WriteOffsets()
 	/* Move current position to start of offset table */
 	fsetpos (m_file, &m_offset_position);
 
-	unsigned long offset;
+	fpos_t offset;
 	for ( unsigned int i=0; i<m_blocks; i++)
 	{
 		offset = m_offset_table[i];
@@ -228,8 +228,10 @@ int EXRFile::WriteFBPixels(int i_numScanLines)
 		/* Save position of current block to offset table */
 		fpos_t pos;
 		fgetpos (m_file, &pos);
+
 		unsigned int k =
 			m_offset_table_counter++/m_scanline_block->NumLinesInBlock();
+
 		m_offset_table[k] = pos;
 
 		m_scanline_block->StoreNextLine(data);

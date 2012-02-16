@@ -34,7 +34,6 @@ public:
 		m_fb_xStride(0),
 		m_fb_yStride(0),
 
-		m_offset_position(0),
 		m_offset_table(NULL),
 		m_blocks(0)
 	{
@@ -119,7 +118,7 @@ private:
 
 	/* Position of offset table in the file */
 	fpos_t m_offset_position;
-	unsigned long *m_offset_table;
+	fpos_t *m_offset_table;
 	unsigned int m_offset_table_counter;
 
 	/* Number of blocks in the file */
