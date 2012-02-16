@@ -24,12 +24,7 @@ int main()
 	
 	ImfHeaderSetLineOrder( header, IMF_INCREASING_Y );
 	
-	ImfHeaderInsertChannel(header, "R", IMF_PIXEL_HALF);
-	ImfHeaderInsertChannel(header, "G", IMF_PIXEL_HALF);
-	ImfHeaderInsertChannel(header, "B", IMF_PIXEL_HALF);
-	ImfHeaderInsertChannel(header, "A", IMF_PIXEL_HALF);
-
-	ImfOutputFile *exr = ImfOpenOutputFile( "gradient.exr", header );
+	ImfOutputFile *exr = ImfOpenOutputFile( "gradient.exr", header, IMF_WRITE_RGBA );
 
 	if( !exr )
 	{
