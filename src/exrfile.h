@@ -41,13 +41,33 @@ public:
 	
 	/*
 		OpenOutputFile
-		
+
 		Open file for writing. Save some attributes from header and write
 		all data except scan line blocks
 	*/
 	int OpenOutputFile(const char* i_fileName);
 	int CloseFile();
+
+	/*
+		SetFBData
+		
+		Save pixel data to temporary buffer
+	*/
+	int SetFBData(
+		const char *i_base,
+		size_t i_xStride,
+		size_t i_yStride);
 	
+	/*
+		WriteOffsets
+		
+		Convert pixel data from temporary buffer to exr scanline blocks,
+		compress and write it to exr file.
+	*/
+	int WriteFBPixels(int i_numScanLines);
+	
+private:
+
 	/*
 		WriteMagic
 		
@@ -84,25 +104,6 @@ public:
 	*/
 	int WriteOffsets();
 	
-	/*
-		WriteOffsets
-		
-		Save pixel data to temporary buffer
-	*/
-	int SetFBData(
-		const char *i_base,
-		size_t i_xStride,
-		size_t i_yStride);
-	
-	/*
-		WriteOffsets
-		
-		Convert pixel data from temporary buffer to exr scanline blocks,
-		compress and write it to exr file.
-	*/
-	int WriteFBPixels(int i_numScanLines);
-	
-private:
 	FILE *m_file;
 	Header* m_header;
 	ScanLineBlock* m_scanline_block;

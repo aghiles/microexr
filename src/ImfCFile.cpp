@@ -305,11 +305,6 @@ ImfOutputFile* ImfOpenOutputFile(
 		return NULL;
 	}
 	
-	file->WriteMagic();
-	file->WriteVersion();
-	file->WriteHeader();
-	file->WriteZerroOffsets();
-	
 	return (ImfOutputFile*)file;
 }
 

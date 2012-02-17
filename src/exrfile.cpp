@@ -49,6 +49,11 @@ int EXRFile::OpenOutputFile(const char* i_fileName)
 
 	m_offset_table = new fpos_t [m_blocks];
 	m_offset_table_counter = 0;
+	
+	WriteMagic();
+	WriteVersion();
+	WriteHeader();
+	WriteZerroOffsets();
 
 	return IMF_ERROR_NOERROR;
 }
