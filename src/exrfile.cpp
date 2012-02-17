@@ -8,6 +8,7 @@
 #include "exrfile.h"
 #include "scanlinezipblock.h"
 
+
 int EXRFile::OpenOutputFile(const char* i_fileName)
 {
 	m_file = fopen(i_fileName, "wb");
@@ -47,7 +48,7 @@ int EXRFile::OpenOutputFile(const char* i_fileName)
 	m_blocks =  height / m_scanline_block->NumLinesInBlock();
 	m_blocks += height % m_scanline_block->NumLinesInBlock() > 0;
 
-	m_offset_table = new fpos_t [m_blocks];
+	m_offset_table = new uint64_t [m_blocks];
 	m_offset_table_counter = 0;
 	
 	WriteMagic();
@@ -126,45 +127,40 @@ int EXRFile::WriteZerroOffsets()
 		the distance, in bytes, between the start of the file and the start
 		of the scan line block.
 
-		It is not possible to get sizes of compressed blocks right now
-		so we fill offset table with 0.
+		So start by saving the current position and store some 0s as a temporary
+		place holder: we will be writing the good offsets at file close time.
 	*/
 
-	/* Save current position of the file.
-	 * Current position is start of offset table */
-	fgetpos (m_file, &m_offset_position);
-
-	/* Fill offset table by 0s */
-	/* The offset is 64 bits */	
-	char offset[] = {0,0,0,0,0,0,0,0};
-	for ( unsigned int i=0; i<m_blocks; i++)
-	{
-		fwrite(offset, sizeof(offset), 1, m_file);
-	}
+	m_offset_position = ftell(m_file);
+	uint64_t offset = 0;
+	fwrite(&offset, sizeof(offset), m_blocks, m_file);
 
 	return IMF_ERROR_NOERROR;
 }
 
+
+/*
+	see comments in WriteZerroOffsets.
+*/
 int EXRFile::WriteOffsets()
 {
 	/*
-		According to [1]:
-		The line offset table allows random access to scan line blocks.
-		The table is a sequence of scan line offsets, with one offset per
-		scan line block. A scan line offset, of type unsigned long, indicates
-		the distance, in bytes, between the start of the file and the start
-		of the scan line block.
-	*/
+		Move current position to start of offset table.
+		NOTE: casting to 'long' here makes sure that we are respecting the
+		fseek signature. On windows this means that we won't support files
+		that are larger than 4gigs because a long on windows is 32 bits.
+	 */
+	long position = m_offset_position;
+	int ret = fseek( m_file, position, SEEK_SET );
 
-	/* Move current position to start of offset table */
-	fsetpos (m_file, &m_offset_position);
-
-	fpos_t offset;
-	for ( unsigned int i=0; i<m_blocks; i++)
+	if( ret == -1 )
 	{
-		offset = m_offset_table[i];
-		fwrite(&offset, sizeof(offset), 1, m_file);
+		return IMF_ERROR_ERROR;
 	}
+
+	/* Write the entire offset table at once. */
+	fwrite(
+		m_offset_table, sizeof(m_offset_table[0]), m_blocks, m_file );
 
 	return IMF_ERROR_NOERROR;
 }
@@ -231,9 +227,7 @@ int EXRFile::WriteFBPixels(int i_numScanLines)
 		}
 
 		/* Save position of current block to offset table */
-		fpos_t pos;
-		fgetpos (m_file, &pos);
-
+		uint64_t  pos = ftell(m_file);
 		unsigned int k =
 			m_offset_table_counter++/m_scanline_block->NumLinesInBlock();
 

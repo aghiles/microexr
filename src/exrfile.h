@@ -20,6 +20,8 @@
 #include "header.h"
 #include "scanlineblock.h"
 
+#include <ctype.h>
+
 class EXRFile
 {
 public:
@@ -118,8 +120,9 @@ private:
 	int m_fb_yStride;
 
 	/* Position of offset table in the file */
-	fpos_t m_offset_position;
-	fpos_t *m_offset_table;
+	uint64_t m_offset_position;
+	uint64_t *m_offset_table;
+
 	unsigned int m_offset_table_counter;
 
 	/* Number of blocks in the file */
