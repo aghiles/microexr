@@ -20,7 +20,7 @@
 #include "header.h"
 #include "scanlineblock.h"
 
-#include <ctype.h>
+#include <stdint.h>
 
 class EXRFile
 {
