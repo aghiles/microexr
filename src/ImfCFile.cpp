@@ -195,7 +195,7 @@ int ImfHeaderSetBox2fAttribute (
 	float xMin, float yMin,
 	float xMax, float yMax)
 {
-	int box2f[] = {xMin, yMin, xMax, yMax};
+	float box2f[] = {xMin, yMin, xMax, yMax};
 	
 	return header(hdr)->SetAttribute(
 		name, "box2f", sizeof(box2f), (char*)&box2f[0]);
@@ -206,7 +206,7 @@ int ImfHeaderSetV2iAttribute(
 	const char name[],
 	int x, int y)
 {
-	float v2i[] = {x, y};
+	int v2i[] = {x, y};
 	
 	return header(hdr)->SetAttribute(
 		name, "v2i", sizeof(v2i), (char*)&v2i[0]);
@@ -228,7 +228,7 @@ int ImfHeaderSetV3iAttribute (
 	const char name[],
 	int x, int y, int z)
 {
-	float v3i[] = {x, y, z};
+	int v3i[] = {x, y, z};
 	
 	return header(hdr)->SetAttribute(
 		name, "v3i", sizeof(v3i), (char*)&v3i[0]);
