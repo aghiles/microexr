@@ -32,11 +32,11 @@ public:
 	
 		m_linesize(i_linesize),
 		m_firstline(i_firstline),
+		m_numlines(i_numlines),
 		
-		m_currentLine(0),
-		
-		m_data( AllocateData( i_numlines ) )
+		m_currentLine(0)
 	{
+		m_data = AllocateData();
 	}
 	
 	virtual ~ScanLineBlock()
@@ -53,7 +53,7 @@ public:
 	*/
 	virtual int NumLinesInBlock()const
 	{
-		return 1;
+		return m_numlines;
 	}
 	
 	/*
@@ -74,12 +74,13 @@ protected:
 		
 		Used to allocate data for ScanLineBlock's buffer
 	*/
-	char* AllocateData(int i_numlines)const;
+	char* AllocateData()const;
 	
 	FILE *m_file;
 	
 	size_t m_linesize;
 	int m_firstline;
+	int m_numlines;
 	
 	int m_currentLine;
 	

@@ -19,12 +19,15 @@
 class ScanLineZipBlock : public ScanLineBlock
 {
 public:
+	enum { kDefaultBlockSize = 16 };
+
 	ScanLineZipBlock(
 		FILE *i_file,
 		size_t i_linesize,
-		int i_firstline) :
-		
-		ScanLineBlock(i_file, i_linesize, i_firstline, NumLinesInBlock())
+		int i_firstline,
+		int i_numlines )
+	:
+		ScanLineBlock(i_file, i_linesize, i_firstline, i_numlines)
 	{
 	}
 	
@@ -34,18 +37,6 @@ public:
 		{
 			WriteCurrentBlockToFile();
 		}
-	}
-	
-	/*
-		NumLinesInBlock
-		
-		One or more scan lines are stored together as a scan-line block.
-		The number of scan lines per block depends on how the pixel
-		data are compressed.
-	*/
-	int NumLinesInBlock()const
-	{
-		return 16;
 	}
 	
 	/*

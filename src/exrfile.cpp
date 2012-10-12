@@ -26,21 +26,30 @@ int EXRFile::OpenOutputFile(const char* i_fileName)
 	
 	int width = m_dataWindow[2] - m_dataWindow[0] + 1;
 	size_t datasize = m_channelList->GetPixelSize() * width;
-	if (m_compression == IMF_ZIP_COMPRESSION)
+	switch( m_compression )
 	{
-		m_scanline_block =
-			new ScanLineZipBlock(
-				m_file,
-				datasize,
-				m_dataWindow[1]);
-	}
-	else
-	{
-		m_scanline_block =
-			new ScanLineBlock(
-				m_file,
-				datasize,
-				m_dataWindow[1]);
+		case IMF_ZIP_COMPRESSION:
+			m_scanline_block =
+				new ScanLineZipBlock(
+					m_file,
+					datasize,
+					m_dataWindow[1],
+					ScanLineZipBlock::kDefaultBlockSize);
+			break;
+		case IMF_ZIPS_COMPRESSION:
+			m_scanline_block =
+				new ScanLineZipBlock(
+					m_file,
+					datasize,
+					m_dataWindow[1],
+					1);
+			break;
+		default:
+			m_scanline_block =
+				new ScanLineBlock(
+					m_file,
+					datasize,
+					m_dataWindow[1]);
 	}
 
 	int height = m_dataWindow[3] - m_dataWindow[1] + 1;

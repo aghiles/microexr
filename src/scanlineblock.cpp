@@ -15,9 +15,9 @@
 
 #include <string.h>
 
-char* ScanLineBlock::AllocateData(int i_numlines)const
+char* ScanLineBlock::AllocateData()const
 {
-	return (char*)malloc( m_linesize * i_numlines );
+	return (char*)malloc( m_linesize * m_numlines );
 }
 
 int ScanLineBlock::StoreNextLine(char* i_data)
