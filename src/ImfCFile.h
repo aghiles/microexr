@@ -56,8 +56,11 @@ typedef struct ImfRgba ImfRgba;
 #define IMF_WRITE_A 0x08
 #define IMF_WRITE_Y 0x10
 #define IMF_WRITE_C 0x20
+#define IMF_WRITE_Z 0x40
+#define IMF_WRITE_ZB 0x80
 #define IMF_WRITE_RGB 0x07
 #define IMF_WRITE_RGBA 0x0f
+#define IMF_WRITE_RGBAZZB 0xcf
 #define IMF_WRITE_YC 0x30
 #define IMF_WRITE_YA 0x18
 #define IMF_WRITE_YCA 0x38
@@ -95,6 +98,12 @@ typedef struct ImfRgba ImfRgba;
 #define IMF_PXR24_COMPRESSION 5
 #define IMF_B44_COMPRESSION 6
 #define IMF_B44A_COMPRESSION 7
+
+/*
+	Data type
+*/
+#define IMF_SCANLINEIMAGE 0
+#define IMF_DEEPSCANLINE 2
 
 /*
 	Pixel types
@@ -164,6 +173,10 @@ void ImfHeaderSetLineOrder (
 void ImfHeaderSetCompression (
 	ImfHeader *hdr,
 	int compression);
+
+void ImfHeaderSetType (
+	ImfHeader *hdr,
+	int dataType);
 
 int ImfHeaderSetIntAttribute (
 	ImfHeader *hdr,
@@ -243,6 +256,23 @@ int ImfOutputSetFrameBuffer (
 	const char *base,
 	size_t xStride,
 	size_t yStride);
+
+/*
+	ImfOutputSetDeepFrameBuffer
+
+	Define a deep frame buffer as a pixel data source:
+	- sampleCount is a table with number of samples for each pixel
+	- data is a table with a pointer to samples.
+	  Pointer to samples of n-th channel of pixel (x, y) is at address
+	  data + x * xStride + y * yStride + n*sampleStride
+*/
+int ImfOutputSetDeepFrameBuffer (
+	ImfOutputFile *out,
+	const unsigned int *sampleCount,
+	const char **data,
+	size_t xStride,
+	size_t yStride,
+	size_t sampleStride);
 
 int ImfOutputWritePixels (
 	ImfOutputFile *out,

@@ -20,7 +20,7 @@ char* ScanLineBlock::AllocateData(int i_numlines)const
 	return (char*)malloc( m_linesize * i_numlines );
 }
 
-int ScanLineBlock::StoreNextLine(char* i_data)
+int ScanLineBlock::StoreNextLine(char* i_data, char* i_reserved)
 {
 	memmove(m_data, i_data, m_linesize);
 	++m_currentLine;

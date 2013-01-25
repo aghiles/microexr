@@ -60,8 +60,10 @@ public:
 		StoreNextLine
 		
 		Copy data to ScanLineBlock's buffer
+
+		i_reserved is used for deep data in childs of this class
 	*/
-	virtual int StoreNextLine(char* i_data);
+	virtual int StoreNextLine(char* i_data, char* i_reserved=NULL);
 	/*
 		WriteToFile
 		
