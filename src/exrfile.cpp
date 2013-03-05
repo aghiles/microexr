@@ -295,7 +295,6 @@ int EXRFile::WriteFBPixels(int i_numScanLines)
 			for (int n=0; n<m_channelList->NumChannels(); ++n)
 			{
 				size_t pixel_size = m_channelList->GetChannelPixelSize(n);
-				size_t channel_offset = m_channelList->GetChannelOffset(n);
 				size_t channel_alphabet_offset =
 					m_channelList->GetChannelAlphabetOffset(n);
 
@@ -312,7 +311,7 @@ int EXRFile::WriteFBPixels(int i_numScanLines)
 						m_dataWindow[0] * m_fb_xStride +
 						n * m_fb_sampleStride;
 
-					for( int s=0; s<m_fb_sampleCount[i*width+j]; s++ )
+					for( unsigned s=0; s<m_fb_sampleCount[i*width+j]; s++ )
 					{
 						const char* sample = *(const char**)source + s*pixel_size;
 
