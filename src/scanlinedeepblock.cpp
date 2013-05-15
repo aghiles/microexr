@@ -35,7 +35,7 @@ ScanLineDeepBlock::ScanLineDeepBlock(
 	m_sampleDataSize(0),
 	/* m_data of parent object is used to store sample offset table.
 	 * m_linesize is used to store size of sample offset table. */
-	ScanLineBlock(i_file, i_sampleOffsetsSize, i_firstline, NumLinesInBlock())
+	ScanLineBlock(i_file, i_sampleOffsetsSize, i_firstline)
 {
 }
 

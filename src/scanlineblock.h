@@ -34,6 +34,8 @@ public:
 		m_firstline(i_firstline),
 		
 		m_currentLine(0),
+
+		m_numlines( i_numlines ),
 		
 		m_data( AllocateData( i_numlines ) )
 	{
@@ -53,7 +55,7 @@ public:
 	*/
 	virtual int NumLinesInBlock()const
 	{
-		return 1;
+		return m_numlines;
 	}
 	
 	/*
@@ -86,6 +88,9 @@ protected:
 	int m_currentLine;
 	
 	char* m_data;
+
+	/* Num lines in a block */
+	const int m_numlines;
 };
 #endif
 

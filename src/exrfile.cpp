@@ -74,6 +74,15 @@ int EXRFile::OpenOutputFile(const char* i_fileName)
 						datasize,
 						m_dataWindow[1]);
 		}
+		else if (m_compression == IMF_ZIPS_COMPRESSION)
+		{
+			m_scanline_block =
+				new ScanLineZipBlock(
+						m_file,
+						datasize,
+						m_dataWindow[1],
+						1);
+		}
 		else
 		{
 			m_scanline_block =
@@ -180,8 +189,7 @@ int EXRFile::WriteZerroOffsets()
 	*/
 
 	m_offset_position = ftell(m_file);
-	uint64_t offset = 0;
-	fwrite(&offset, sizeof(offset), m_blocks, m_file);
+	fwrite(m_offset_table, sizeof(m_offset_table[0]), m_blocks, m_file);
 
 	return IMF_ERROR_NOERROR;
 }
