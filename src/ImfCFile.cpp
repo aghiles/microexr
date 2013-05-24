@@ -150,6 +150,25 @@ void ImfHeaderSetCompression(
 		(char*)&attribute_compression);
 }
 
+void ImfHeaderSetType (
+	ImfHeader *hdr,
+	int dataType)
+{
+	const char* type = "type";
+	const char* version = "version";
+
+	if( dataType == IMF_SCANLINEIMAGE )
+	{
+		ImfHeaderSetStringAttribute( hdr, type, "scanlineimage" );
+	}
+	else if( dataType == IMF_DEEPSCANLINE )
+	{
+		ImfHeaderSetStringAttribute( hdr, type, "deepscanline" );
+	}
+
+	ImfHeaderSetIntAttribute( hdr, version, 1 );
+}
+
 int ImfHeaderSetIntAttribute(
 	ImfHeader *hdr,
 	const char name[],
@@ -269,8 +288,7 @@ ImfOutputFile* ImfOpenOutputFile(
 
 	/*
 		Now, if we don't have any channels present in the header we
-		add whatever is asked in i_channels. We use the "half"
-		data type.
+		add whatever is asked in i_channels.
 
 		Note that for programs built with the standard OpenEXR API,
 		there is of course no channels in the header since there are
@@ -279,10 +297,14 @@ ImfOutputFile* ImfOpenOutputFile(
 	if( h->NumChannels() == 0 )
 	{
 		unsigned channels[] = {
-			IMF_WRITE_R, IMF_WRITE_G, IMF_WRITE_B, IMF_WRITE_A, IMF_WRITE_Y,
-			IMF_WRITE_C };
+			IMF_WRITE_R, IMF_WRITE_G, IMF_WRITE_B, IMF_WRITE_A,
+			IMF_WRITE_Y, IMF_WRITE_C, IMF_WRITE_Z, IMF_WRITE_ZB };
 
-		const char *names[] = { "R", "G", "B", "A", "Y", "C" };
+		const char *names[] = { "R", "G", "B", "A", "Y", "C", "Z", "ZBack" };
+
+		int types[] = {
+			IMF_PIXEL_HALF, IMF_PIXEL_HALF, IMF_PIXEL_HALF, IMF_PIXEL_HALF,
+			IMF_PIXEL_HALF, IMF_PIXEL_HALF, IMF_PIXEL_FLOAT, IMF_PIXEL_FLOAT };
 
 		assert( sizeof(names)/sizeof(names[0]) == 
 			sizeof(channels)/sizeof(channels[0]) );
@@ -292,7 +314,7 @@ ImfOutputFile* ImfOpenOutputFile(
 			if( i_channels & channels[i] )
 			{
 				ImfHeaderInsertChannel(
-					(ImfHeader*)hdr, names[i], IMF_PIXEL_HALF );
+					(ImfHeader*)hdr, names[i], types[i] );
 			}
 		}
 	}
@@ -325,6 +347,18 @@ int ImfOutputSetFrameBuffer (
 	size_t yStride)
 {
 	return exrfile( out )->SetFBData(base, xStride, yStride);
+}
+
+int ImfOutputSetDeepFrameBuffer (
+	ImfOutputFile *out,
+	const unsigned int *sampleCount,
+	const char **data,
+	size_t xStride,
+	size_t yStride,
+	size_t sampleStride)
+{
+	return exrfile( out )->SetFBDeepData(
+			sampleCount, data, xStride, yStride, sampleStride);
 }
 
 int ImfOutputWritePixels (

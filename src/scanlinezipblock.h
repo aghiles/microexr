@@ -6,7 +6,7 @@
 /******************************************************************************/
 
 /*
-	class ScanLineBlock
+	class ScanLineZipBlock
 
 	IMF_ZIP_COMPRESSION scan line block in exr file
 */
@@ -44,7 +44,7 @@ public:
 		
 		Copy data to ScanLineBlock's buffer
 	*/
-	int StoreNextLine(char* i_data);
+	int StoreNextLine(char* i_data, char* i_reserved=NULL);
 	/*
 		WriteToFile
 		

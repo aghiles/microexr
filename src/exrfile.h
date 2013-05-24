@@ -32,9 +32,11 @@ public:
 		m_compression(0),
 		m_channelList(NULL),
 		
+		m_fb_sampleCount(NULL),
 		m_fb_base(NULL),
 		m_fb_xStride(0),
 		m_fb_yStride(0),
+		m_fb_sampleStride(0),
 
 		m_offset_table(NULL),
 		m_blocks(0)
@@ -59,7 +61,19 @@ public:
 		const char *i_base,
 		size_t i_xStride,
 		size_t i_yStride);
-	
+
+	/*
+		SetFBDeepData
+
+		Save deep pixel data to a temporary buffer
+	*/
+	int SetFBDeepData(
+		const unsigned int *i_sampleCount,
+		const char **i_base,
+		size_t i_xStride,
+		size_t i_yStride,
+		size_t i_sampleStride);
+
 	/*
 		WriteOffsets
 		
@@ -109,15 +123,19 @@ private:
 	FILE *m_file;
 	Header* m_header;
 	ScanLineBlock* m_scanline_block;
+
+	int m_dataType;
 	
 	int m_dataWindow[4];
 	unsigned char m_compression;
 	
 	ChannelList* m_channelList;
 	
+	const unsigned int *m_fb_sampleCount;
 	const char *m_fb_base;
 	int m_fb_xStride;
 	int m_fb_yStride;
+	int m_fb_sampleStride;
 
 	/* Position of offset table in the file */
 	uint64_t m_offset_position;

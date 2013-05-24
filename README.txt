@@ -8,11 +8,13 @@ What the hell is this library ?
 This library was started in order to replace the original OpenEXR
 library for a limited set of capabilities. As of now, this library
 will let you _write_ multi-channels OpenEXR files in scanline format,
-with ZIP or ZIPS compression support.
+with ZIP or ZIPS compression support, as well as EXR 2.0 deep image
+files.
 
 We choose to support only the original OpenEXR C API. We have added
-one function to enable users to write multi-channel EXRs so that the
-library is functional (original C API only allows for RGB[A] files).
+one function to enable users to write multi-channel and deep EXRs so
+that the library is functional (original C API only allows for RGB[A]
+files).
 
 If you are already using the interface designed in "ImfCFile.h", 
 chances are that you can readily link with this library.
@@ -42,7 +44,7 @@ microexr/src
 
 microexr/test
 	
-	Contains a simple test that produces an EXR file.
+	Contains simple tests that produce EXR and EXR 2.0 file.
 
 microexr/tools
 
@@ -72,8 +74,9 @@ To build the test:
   cd microexr/tools
   make
   ./gradient
+  ./deepgradient
 
-This will generate a simple gradient file in "gradient.exr".
+This generates two gradient files: "gradient.exr" and 
 
 Dependencies
 ------------

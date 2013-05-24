@@ -10,7 +10,7 @@
 
 #include <string.h>
 
-int ScanLineZipBlock::StoreNextLine(char* i_data)
+int ScanLineZipBlock::StoreNextLine(char* i_data, char* i_reserved)
 {
 	/* number of line in block */
 	int line = m_currentLine % NumLinesInBlock();
