@@ -87,9 +87,6 @@ protected:
 	int m_currentLine;
 	
 	char* m_data;
-
-	/* Num lines in a block */
-	const int m_numlines;
 };
 #endif
 
