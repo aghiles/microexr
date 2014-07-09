@@ -98,6 +98,8 @@ int EXRFile::OpenOutputFile(const char* i_fileName)
 	m_blocks += height % m_scanline_block->NumLinesInBlock() > 0;
 
 	m_offset_table = new uint64_t [m_blocks];
+	// Initialize table to 0, so that valgrind doesn't complain about writing it out to file before we initialize it
+	for( int i = 0; i < m_blocks; i++ ) m_offset_table[i] = 0;
 	m_offset_table_counter = 0;
 	
 	WriteMagic();
